@@ -1,0 +1,2361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CivicResolve AI — For the Citizen, By the Citizen, To the Citizen</title>
+  <style>
+    /* ==========================================================================
+       1. NEON-BLACK, ELECTRIC-BLUE & GLOWING-PINK DESIGN SYSTEM
+       ========================================================================== */
+    :root {
+      --bg-obsidian: #04060d;
+      --bg-deep: #080c1a;
+      --bg-card: rgba(13, 19, 38, 0.86);
+      --bg-card-solid: #0d1326;
+      --bg-input: #060914;
+
+      --neon-cyan: #00e5ff;
+      --neon-blue: #3b82f6;
+      --neon-pink: #ff2a85;
+      --neon-purple: #a855f7;
+      --neon-emerald: #10b981;
+      --neon-amber: #f59e0b;
+
+      --text-primary: #f8fafc;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+
+      --border-cyan: rgba(0, 229, 255, 0.34);
+      --border-pink: rgba(255, 42, 133, 0.38);
+      --border-subtle: rgba(148, 163, 184, 0.16);
+
+      --glow-cyan: 0 0 26px rgba(0, 229, 255, 0.24);
+      --glow-pink: 0 0 28px rgba(255, 42, 133, 0.28);
+      --glow-dual: 0 10px 36px rgba(0, 229, 255, 0.16), 0 10px 36px rgba(255, 42, 133, 0.18);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      background-color: var(--bg-obsidian);
+      color: var(--text-primary);
+      line-height: 1.55;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Ambient Neon-Black + Electric-Blue + Glowing-Pink Mesh Background */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(0, 229, 255, 0.17) 0%, transparent 42%),
+        radial-gradient(circle at 88% 16%, rgba(255, 42, 133, 0.2) 0%, transparent 45%),
+        radial-gradient(circle at 50% 88%, rgba(59, 130, 246, 0.16) 0%, transparent 50%),
+        linear-gradient(180deg, #03050b 0%, #070b18 52%, #04060d 100%);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background-image:
+        linear-gradient(rgba(0, 229, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 42, 133, 0.03) 1px, transparent 1px);
+      background-size: 46px 46px;
+      pointer-events: none;
+    }
+
+    /* Strict SVG Sizing Safeguard */
+    svg {
+      display: inline-block;
+      vertical-align: middle;
+      flex-shrink: 0;
+      max-width: 100%;
+    }
+    .icon-xs { width: 14px; height: 14px; }
+    .icon-sm { width: 18px; height: 18px; }
+    .icon-md { width: 22px; height: 22px; }
+    .icon-lg { width: 30px; height: 30px; }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    /* ==========================================================================
+       2. FIRST SCREEN: WELCOME & CITIZEN LOGIN PORTAL
+       ========================================================================== */
+    .login-portal {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      position: relative;
+      z-index: 90;
+    }
+    .login-portal.hidden {
+      display: none;
+    }
+    .login-shell {
+      width: 100%;
+      max-width: 980px;
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      border-radius: var(--radius-xl);
+      background: rgba(9, 13, 28, 0.94);
+      border: 1px solid var(--border-cyan);
+      box-shadow: var(--glow-dual);
+      overflow: hidden;
+      backdrop-filter: blur(16px);
+    }
+    @media (max-width: 860px) {
+      .login-shell { grid-template-columns: 1fr; }
+    }
+
+    .login-left {
+      padding: 2.35rem;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.16), transparent 55%),
+        radial-gradient(circle at 85% 85%, rgba(255, 42, 133, 0.18), transparent 55%),
+        rgba(6, 10, 22, 0.95);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+    @media (max-width: 860px) {
+      .login-left { border-right: none; border-bottom: 1px solid var(--border-subtle); padding: 1.75rem; }
+    }
+
+    .login-right {
+      padding: 2.35rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    @media (max-width: 860px) {
+      .login-right { padding: 1.75rem; }
+    }
+
+    .motto-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(0, 229, 255, 0.12);
+      border: 1px solid var(--border-cyan);
+      color: var(--neon-cyan);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      width: fit-content;
+    }
+
+    .gradient-title {
+      font-size: clamp(1.55rem, 2.8vw, 2.2rem);
+      font-weight: 800;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #00e5ff 0%, #ffffff 48%, #ff2a85 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-quote-box {
+      background: rgba(255, 255, 255, 0.04);
+      border-left: 3px solid var(--neon-pink);
+      padding: 0.95rem 1.1rem;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+
+    .login-trust-badges {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+    .mini-stat {
+      background: rgba(4, 6, 13, 0.78);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.75rem 0.9rem;
+    }
+    .mini-stat strong {
+      display: block;
+      font-size: 1.15rem;
+      color: var(--neon-cyan);
+    }
+    .mini-stat.pink strong { color: #ff5ca3; }
+    .mini-stat span {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    /* ==========================================================================
+       3. FORMS, BUTTONS, BADGES & INPUTS
+       ========================================================================== */
+    .form-group { margin-bottom: 1rem; }
+    .form-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      margin-bottom: 0.38rem;
+    }
+    .req { color: var(--neon-pink); }
+
+    .form-control {
+      width: 100%;
+      padding: 0.72rem 0.95rem;
+      border-radius: var(--radius-md);
+      background: var(--bg-input);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      color: #ffffff;
+      font-size: 0.92rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-control::placeholder { color: #64748b; }
+    .form-control:focus {
+      outline: none;
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.18);
+    }
+    textarea.form-control {
+      min-height: 112px;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.3rem;
+      border-radius: var(--radius-md);
+      font-weight: 700;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-neon {
+      background: linear-gradient(135deg, #0284c7 0%, #2563eb 48%, #db2777 100%);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 4px 22px rgba(219, 39, 119, 0.38);
+    }
+    .btn-neon:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.1);
+      box-shadow: 0 6px 28px rgba(0, 229, 255, 0.42);
+    }
+    .btn-cyan {
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--border-cyan);
+      color: var(--neon-cyan);
+    }
+    .btn-cyan:hover { background: rgba(0, 229, 255, 0.2); }
+    .btn-pink {
+      background: rgba(255, 42, 133, 0.12);
+      border: 1px solid var(--border-pink);
+      color: #ff7ab8;
+    }
+    .btn-pink:hover { background: rgba(255, 42, 133, 0.22); }
+    .btn-emerald {
+      background: rgba(16, 185, 129, 0.16);
+      border: 1px solid rgba(16, 185, 129, 0.5);
+      color: #6ee7b7;
+    }
+    .btn-emerald.verified {
+      background: #10b981;
+      color: #04100a;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.45);
+    }
+    .btn-sm { padding: 0.45rem 0.85rem; font-size: 0.8rem; }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+    }
+    .chip-btn {
+      font-size: 0.77rem;
+      font-weight: 600;
+      padding: 0.36rem 0.78rem;
+      border-radius: 999px;
+      background: rgba(0, 229, 255, 0.08);
+      border: 1px solid rgba(0, 229, 255, 0.28);
+      color: #7dd3fc;
+      transition: all 0.18s;
+    }
+    .chip-btn:hover {
+      background: rgba(255, 42, 133, 0.18);
+      border-color: var(--neon-pink);
+      color: #ffffff;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.24rem 0.68rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge-critical { background: rgba(255, 42, 133, 0.22); color: #ff7ab8; border: 1px solid rgba(255, 42, 133, 0.48); }
+    .badge-high { background: rgba(249, 115, 22, 0.22); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.44); }
+    .badge-medium { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.42); }
+    .badge-low { background: rgba(148, 163, 184, 0.18); color: #cbd5e1; border: 1px solid rgba(148, 163, 184, 0.34); }
+    .badge-resolved { background: rgba(16, 185, 129, 0.22); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.48); }
+    .badge-progress { background: rgba(0, 229, 255, 0.18); color: #67e8f9; border: 1px solid rgba(0, 229, 255, 0.45); }
+    .badge-submitted { background: rgba(168, 85, 247, 0.22); color: #d8b4fe; border: 1px solid rgba(168, 85, 247, 0.45); }
+
+    /* ==========================================================================
+       4. MAIN PLATFORM SHELL, HEADER & NAVIGATION
+       ========================================================================== */
+    .main-app {
+      display: none;
+    }
+    .main-app.visible {
+      display: block;
+      animation: fadeUp 0.35s ease;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .top-ribbon {
+      background: linear-gradient(90deg, rgba(0, 229, 255, 0.14), rgba(255, 42, 133, 0.16), rgba(0, 229, 255, 0.14));
+      border-bottom: 1px solid var(--border-cyan);
+      padding: 0.45rem 1.25rem;
+      font-size: 0.78rem;
+      color: var(--text-secondary);
+    }
+    .ribbon-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      box-shadow: 0 0 10px var(--neon-cyan);
+      margin-right: 6px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.25); }
+    }
+
+    .app-header {
+      background: rgba(6, 9, 20, 0.9);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-subtle);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .header-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0.85rem 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+    .brand-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(255, 42, 133, 0.24));
+      border: 1px solid var(--neon-cyan);
+      box-shadow: var(--glow-cyan);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--neon-cyan);
+    }
+    .brand-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ffffff 0%, #7dd3fc 52%, #f472b6 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .user-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.42rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--border-cyan);
+      font-size: 0.8rem;
+      color: #ffffff;
+    }
+    .satisfied-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      padding: 0.42rem 0.9rem;
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.22), rgba(0, 229, 255, 0.18));
+      border: 1px solid var(--neon-pink);
+      box-shadow: var(--glow-pink);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .nav-bar {
+      background: rgba(4, 6, 13, 0.78);
+      border-top: 1px solid var(--border-subtle);
+    }
+    .nav-inner {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 0.5rem 1.25rem;
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+    }
+    .nav-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.58rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border: 1px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .nav-tab:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .nav-tab.active {
+      color: #ffffff;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.2), rgba(255, 42, 133, 0.2));
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 18px rgba(0, 229, 255, 0.18);
+    }
+    .tab-badge {
+      font-size: 0.72rem;
+      padding: 1px 7px;
+      border-radius: 999px;
+      background: rgba(0, 229, 255, 0.22);
+      color: var(--neon-cyan);
+      font-weight: 800;
+    }
+
+    .container {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: 1.5rem 1.25rem 4rem;
+    }
+
+    /* Hero Motto Banner */
+    .hero-banner {
+      border-radius: var(--radius-xl);
+      padding: 1.65rem 2rem;
+      margin-bottom: 1.75rem;
+      background: linear-gradient(135deg, rgba(10, 16, 34, 0.95) 0%, rgba(22, 11, 36, 0.94) 100%);
+      border: 1px solid var(--border-cyan);
+      box-shadow: var(--glow-dual);
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 1.5rem;
+      align-items: center;
+    }
+    @media (max-width: 960px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-banner { padding: 1.35rem; }
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+    }
+    .stat-card {
+      background: rgba(4, 6, 13, 0.82);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.9rem;
+    }
+    .stat-card.pink { border-color: var(--border-pink); }
+    .stat-num { font-size: 1.4rem; font-weight: 800; color: var(--neon-cyan); }
+    .stat-card.pink .stat-num { color: #ff5ca3; }
+    .stat-lbl { font-size: 0.76rem; color: var(--text-muted); margin-top: 0.15rem; }
+
+    /* ==========================================================================
+       5. CARDS, EMPATHETIC AI COMPANION & POTHOLE SAMPLES
+       ========================================================================== */
+    .tab-panel { display: none; animation: fadeUp 0.25s ease; }
+    .tab-panel.active { display: block; }
+
+    .grid-2-col {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 960px) { .grid-2-col { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--bg-card);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+      overflow: hidden;
+    }
+    .card.cyan-glow { border-color: var(--border-cyan); box-shadow: var(--glow-cyan); }
+    .card.pink-glow { border-color: var(--border-pink); box-shadow: var(--glow-pink); }
+
+    .card-header {
+      padding: 1rem 1.35rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255, 255, 255, 0.025);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .card-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .card-body { padding: 1.35rem; }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 640px) { .form-grid { grid-template-columns: 1fr; } }
+    .form-group.full { grid-column: 1 / -1; }
+
+    /* Empathetic AI Companion Box */
+    .empathy-panel {
+      border-radius: var(--radius-lg);
+      padding: 1.15rem 1.25rem;
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.16) 0%, rgba(0, 229, 255, 0.12) 100%);
+      border: 1px solid rgba(255, 42, 133, 0.48);
+      box-shadow: 0 0 24px rgba(255, 42, 133, 0.16);
+    }
+    .empathy-tag {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #ff7ab8;
+      margin-bottom: 0.45rem;
+    }
+    .empathy-quote {
+      font-size: 0.95rem;
+      color: #ffffff;
+      line-height: 1.58;
+    }
+    .empathy-assurance {
+      margin-top: 0.65rem;
+      padding-top: 0.6rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.16);
+      font-size: 0.82rem;
+      color: #7dd3fc;
+    }
+
+    /* Assigned Officer Mini Card inside Triage */
+    .officer-assigned-box {
+      margin-top: 1rem;
+      background: rgba(4, 7, 16, 0.85);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-md);
+      padding: 0.9rem 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    /* Sample Pothole Photo Evidence Grid */
+    .pothole-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 640px) { .pothole-grid { grid-template-columns: 1fr; } }
+    .pothole-item {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      text-align: left;
+      transition: all 0.2s;
+    }
+    .pothole-item:hover { border-color: var(--neon-cyan); transform: translateY(-2px); }
+    .pothole-item.selected {
+      border-color: var(--neon-pink);
+      box-shadow: 0 0 18px rgba(255, 42, 133, 0.34);
+      background: rgba(255, 42, 133, 0.1);
+    }
+    .pothole-thumb {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 0.45rem;
+      position: relative;
+      background: #0a0f1e;
+      border: 1px solid rgba(0, 229, 255, 0.25);
+    }
+    .pothole-thumb img,
+    .ai-photo-stage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .pothole-item:hover .pothole-thumb img,
+    .card:hover .ai-photo-stage img {
+      transform: scale(1.04);
+    }
+    .ai-photo-stage {
+      width: 100%;
+      aspect-ratio: 16 / 10;
+      position: relative;
+      overflow: hidden;
+      background: #070b16;
+    }
+    .ai-bbox-overlay {
+      position: absolute;
+      inset: 14% 16% 18% 14%;
+      border: 2px dashed var(--neon-pink);
+      border-radius: 6px;
+      box-shadow: 0 0 14px rgba(255, 42, 133, 0.45), inset 0 0 12px rgba(0, 229, 255, 0.18);
+      pointer-events: none;
+    }
+    .ai-bbox-overlay.cyan {
+      border-color: var(--neon-cyan);
+      box-shadow: 0 0 14px rgba(0, 229, 255, 0.45), inset 0 0 12px rgba(255, 42, 133, 0.18);
+    }
+    .ai-bbox-tag {
+      position: absolute;
+      top: -20px;
+      left: -2px;
+      background: var(--neon-pink);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.03em;
+    }
+    .ai-bbox-overlay.cyan .ai-bbox-tag {
+      background: var(--neon-cyan);
+      color: #04060d;
+    }
+    .ai-hud-bar {
+      position: absolute;
+      left: 6px;
+      right: 6px;
+      bottom: 6px;
+      background: rgba(4, 6, 13, 0.84);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      border-radius: 4px;
+      padding: 3px 7px;
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: var(--neon-cyan);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 0.4rem;
+      pointer-events: none;
+    }
+    .evidence-preview-card {
+      display: none;
+      margin-top: 0.65rem;
+      background: rgba(4, 6, 13, 0.88);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-md);
+      padding: 0.65rem;
+      gap: 0.85rem;
+      align-items: center;
+    }
+    .evidence-preview-card.visible {
+      display: flex;
+      animation: fadeUp 0.25s ease;
+    }
+    @media (max-width: 540px) {
+      .evidence-preview-card.visible {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
+    /* ==========================================================================
+       6. FULL-SCREEN POST-SUBMISSION EMPATHETIC OVERLAY ("YOUR FRIEND")
+       ========================================================================== */
+    .fullscreen-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(0, 229, 255, 0.22) 0%, transparent 45%),
+        radial-gradient(circle at 80% 80%, rgba(255, 42, 133, 0.25) 0%, transparent 48%),
+        rgba(3, 5, 11, 0.96);
+      backdrop-filter: blur(18px);
+      overflow-y: auto;
+    }
+    .fullscreen-overlay.open {
+      display: flex;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .friend-modal {
+      width: 100%;
+      max-width: 820px;
+      border-radius: var(--radius-xl);
+      background: rgba(11, 16, 34, 0.96);
+      border: 1px solid var(--neon-pink);
+      box-shadow: 0 0 50px rgba(255, 42, 133, 0.28), 0 0 50px rgba(0, 229, 255, 0.2);
+      padding: 2rem;
+      position: relative;
+    }
+    @media (max-width: 640px) { .friend-modal { padding: 1.35rem; } }
+
+    .validation-card {
+      background: linear-gradient(135deg, rgba(255, 42, 133, 0.15), rgba(0, 229, 255, 0.12));
+      border: 1px solid rgba(255, 42, 133, 0.45);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.4rem;
+      margin: 1rem 0 1.35rem;
+    }
+
+    .enlarged-wait-heading {
+      font-size: clamp(1.35rem, 2.8vw, 1.95rem);
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -0.02em;
+      background: linear-gradient(90deg, #00e5ff 0%, #ffffff 50%, #ff2a85 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 1.25rem 0 0.9rem;
+    }
+
+    .mindset-check-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+      background: rgba(4, 7, 16, 0.85);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 0.95rem 1.2rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .overlay-actions-row {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 0.9rem;
+    }
+    @media (max-width: 580px) { .overlay-actions-row { grid-template-columns: 1fr; } }
+
+    /* Interactive "Your Friend" AI Chat Drawer inside Full-Screen Overlay */
+    .friend-chat-box {
+      display: none;
+      margin-top: 1.35rem;
+      border-top: 1px solid var(--border-subtle);
+      padding-top: 1.2rem;
+    }
+    .friend-chat-box.open {
+      display: block;
+      animation: fadeUp 0.25s ease;
+    }
+    .chat-messages {
+      max-height: 240px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      padding: 0.85rem;
+      background: rgba(4, 6, 13, 0.86);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 0.75rem;
+    }
+    .chat-bubble {
+      max-width: 86%;
+      padding: 0.65rem 0.9rem;
+      border-radius: var(--radius-md);
+      font-size: 0.88rem;
+      line-height: 1.48;
+    }
+    .chat-bubble.ai {
+      align-self: flex-start;
+      background: linear-gradient(135deg, rgba(0, 229, 255, 0.16), rgba(255, 42, 133, 0.14));
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      color: #f8fafc;
+    }
+    .chat-bubble.user {
+      align-self: flex-end;
+      background: rgba(255, 42, 133, 0.24);
+      border: 1px solid rgba(255, 42, 133, 0.45);
+      color: #ffffff;
+    }
+
+    /* ==========================================================================
+       7. OFFICERS DIRECTORY, TESTIMONIALS & TRACKER STYLES
+       ========================================================================== */
+    .officers-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.15rem;
+    }
+    @media (max-width: 960px) { .officers-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px) { .officers-grid { grid-template-columns: 1fr; } }
+
+    .officer-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-cyan);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.9rem;
+    }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.15rem;
+    }
+    @media (max-width: 960px) { .testimonials-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 620px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+    .testimonial-card:hover { border-color: var(--neon-pink); }
+
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+      margin: 0.75rem 0;
+    }
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 11px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: rgba(148, 163, 184, 0.25);
+    }
+    .timeline-step { position: relative; padding-bottom: 1.2rem; }
+    .timeline-dot {
+      position: absolute;
+      left: -2rem;
+      top: 2px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-obsidian);
+      border: 2px solid #475569;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .timeline-step.done .timeline-dot { background: var(--neon-emerald); border-color: var(--neon-emerald); color: #04100a; }
+    .timeline-step.current .timeline-dot { background: var(--neon-cyan); border-color: var(--neon-cyan); color: #04060d; box-shadow: 0 0 12px var(--neon-cyan); }
+
+    .bar-row { margin-bottom: 0.9rem; }
+    .bar-meta { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.3rem; }
+    .bar-track { height: 9px; background: rgba(255, 255, 255, 0.08); border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; transition: width 0.4s ease; }
+
+    .toast-stack {
+      position: fixed;
+      bottom: 1.25rem;
+      right: 1.25rem;
+      z-index: 300;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-width: 360px;
+    }
+    .toast {
+      background: #0c1326;
+      color: #ffffff;
+      border: 1px solid var(--neon-cyan);
+      border-left: 4px solid var(--neon-pink);
+      box-shadow: var(--glow-dual);
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      animation: fadeUp 0.2s ease;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       SCREEN 1: WELCOME & CITIZEN LOGIN PORTAL
+       ======================================================================== -->
+  <section class="login-portal" id="loginPortal" aria-label="Citizen Welcome and Login">
+    <div class="login-shell">
+      <div class="login-left">
+        <div>
+          <div class="motto-pill" style="margin-bottom:1rem;">
+            <svg class="icon-xs" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+            CivicResolve AI &bull; Citizen Gateway
+          </div>
+          <h1 class="gradient-title" style="margin-bottom:0.65rem;">
+            &ldquo;For the Citizen, By the Citizen, To the Citizen&rdquo;
+          </h1>
+          <p style="font-size:0.84rem;color:#f9a8d4;font-style:italic;margin-bottom:1.1rem;">
+            Inspired by Abraham Lincoln&rsquo;s vision of government that listens, cares, and answers to its people.
+          </p>
+          <div class="welcome-quote-box">
+            <strong>Welcome, Friend &amp; Neighbor!</strong><br />
+            Every street corner, streetlight, and neighborhood matters. Step inside a safe, compassionate civic space where an empathetic AI listens without judgment and connects you directly with accountable municipal officers.
+          </div>
+        </div>
+
+        <div class="login-trust-badges">
+          <div class="mini-stat pink">
+            <strong>58+ Satisfied</strong>
+            <span>Verified Citizen Responses</span>
+          </div>
+          <div class="mini-stat">
+            <strong>Direct Officers</strong>
+            <span>Real-Time Ward Escalation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-right">
+        <div style="margin-bottom:1.25rem;">
+          <h2 style="font-size:1.35rem;font-weight:800;color:#ffffff;margin-bottom:0.25rem;">Citizen Check-In Portal</h2>
+          <p style="font-size:0.84rem;color:var(--text-muted);">
+            Enter your name and residence to personalize your neighborhood protection dashboard.
+          </p>
+        </div>
+
+        <form id="citizenLoginForm" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="loginNameInput">Your Full Name <span class="req">*</span></label>
+            <input type="text" id="loginNameInput" class="form-control" placeholder="e.g., Aarav Sundaram" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginResidenceInput">Your Residence / Street / Ward <span class="req">*</span></label>
+            <input type="text" id="loginResidenceInput" class="form-control" placeholder="e.g., 2nd Avenue, Anna Nagar (Ward 14)" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="loginWardSelect">Municipal Zone <span class="req">*</span></label>
+            <select id="loginWardSelect" class="form-control">
+              <option value="Ward 14 - North Anna Nagar">Ward 14 &mdash; North Anna Nagar</option>
+              <option value="Ward 05 - Central MG Road">Ward 05 &mdash; Central MG Road</option>
+              <option value="Ward 19 - East Adyar & Besant">Ward 19 &mdash; East Adyar &amp; Besant</option>
+              <option value="Ward 28 - South Velachery">Ward 28 &mdash; South Velachery</option>
+              <option value="Ward 32 - West Porur Corridor">Ward 32 &mdash; West Porur Corridor</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn btn-neon" style="width:100%;margin-top:0.4rem;">
+            Enter CivicResolve AI Platform &rarr;
+          </button>
+        </form>
+
+        <div style="margin-top:1rem;padding-top:0.85rem;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+          <span style="font-size:0.76rem;color:var(--text-muted);">Quick Judge / Resident Demo:</span>
+          <button type="button" class="btn btn-cyan btn-sm" id="quickJudgeLoginBtn">
+            Autofill &amp; Enter as Citizen
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       SCREEN 2: MAIN CIVICRESOLVE AI PLATFORM
+       ======================================================================== -->
+  <div class="main-app" id="mainApp">
+    <!-- Top Trust Strip -->
+    <div class="top-ribbon">
+      <div class="ribbon-inner">
+        <div>
+          <span class="pulse-dot"></span>
+          <strong>CivicResolve AI</strong> &bull; &ldquo;For the Citizen, By the Citizen, To the Citizen&rdquo;
+        </div>
+        <div>
+          <span style="color:#ff7ab8;font-weight:700;">&#9733; <span id="topSatisfiedCount">58+</span> Satisfied Responses</span> &bull; 24/7 Empathetic AI Companion
+        </div>
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-inner">
+        <div class="brand">
+          <div class="brand-icon">
+            <svg class="icon-lg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          </div>
+          <div>
+            <div class="brand-title">CivicResolve AI</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">Empathetic Citizen Redressal &amp; Municipal Accountability</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:0.65rem;flex-wrap:wrap;">
+          <div class="user-chip" id="loggedInUserChip">
+            <svg class="icon-xs" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span id="headerCitizenLabel">Citizen</span>
+          </div>
+          <div class="satisfied-pill">
+            <span>&#9829; <span id="headerSatisfiedCount">58+</span> Satisfied Responses</span>
+          </div>
+          <button type="button" class="btn btn-pink btn-sm" id="switchUserBtn">Switch Resident</button>
+        </div>
+      </div>
+
+      <nav class="nav-bar" aria-label="Primary Platform Sections">
+        <div class="nav-inner">
+          <button class="nav-tab active" data-tab="report">
+            <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+            Report Issue &amp; Empathetic AI
+          </button>
+          <button class="nav-tab" data-tab="officers">
+            <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            Officers In-Charge Directory
+          </button>
+          <button class="nav-tab" data-tab="voices">
+            <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            50+ Satisfied Responses &amp; Pothole AI
+          </button>
+          <button class="nav-tab" data-tab="track">
+            <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            Live Tracker &amp; Transparency
+            <span class="tab-badge" id="navTicketCount">3</span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <!-- Personalized Welcome & Motto Banner -->
+      <section class="hero-banner">
+        <div class="hero-grid">
+          <div>
+            <div class="motto-pill" style="margin-bottom:0.65rem;">
+              &ldquo;For the Citizen, By the Citizen, To the Citizen&rdquo;
+            </div>
+            <h2 class="gradient-title" id="personalGreetingHeading" style="margin-bottom:0.5rem;">
+              Welcome home, Citizen!
+            </h2>
+            <p style="font-size:0.93rem;color:var(--text-secondary);background:rgba(255,255,255,0.04);border-left:3px solid var(--neon-pink);padding:0.75rem 1rem;border-radius:0 var(--radius-md) var(--radius-md) 0;">
+              You are never alone when something goes wrong in your neighborhood. Share your concern below without hesitation&mdash;CivicAI listens with empathy, assigns the responsible Officer In-Charge with their direct contact number, and stays by your side while it gets solved.
+            </p>
+          </div>
+
+          <div class="hero-stats">
+            <div class="stat-card pink">
+              <div class="stat-num" id="heroSatisfiedStat">58+</div>
+              <div class="stat-lbl">Satisfied Citizen Responses</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">99.2%</div>
+              <div class="stat-lbl">AI Hazard Triage Precision</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">Direct Call</div>
+              <div class="stat-lbl">Verified Officer In-Charge Numbers</div>
+            </div>
+            <div class="stat-card pink">
+              <div class="stat-num">24/7 Friend</div>
+              <div class="stat-lbl">Post-Report Emotional Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 1: REPORT GRIEVANCE + EMPATHETIC AI + SAMPLE POTHOLE EVIDENCE
+           ==================================================================== -->
+      <section id="tab-report" class="tab-panel active">
+        <div class="grid-2-col">
+          <!-- Left: Grievance Form -->
+          <div class="card cyan-glow">
+            <div class="card-header">
+              <div class="card-title">
+                <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00e5ff" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Report a Neighborhood Issue
+              </div>
+              <span class="badge badge-progress">Zero-Hesitation Safe Portal</span>
+            </div>
+
+            <div class="card-body">
+              <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--neon-cyan);margin-bottom:0.45rem;">
+                Quick-Fill Civic Issue Scenarios:
+              </div>
+              <div class="chip-row">
+                <button type="button" class="chip-btn" data-preset="pothole">Deep Waterlogged Pothole</button>
+                <button type="button" class="chip-btn" data-preset="crater">Arterial Road Crater</button>
+                <button type="button" class="chip-btn" data-preset="drain">Collapsed Drain Slab</button>
+                <button type="button" class="chip-btn" data-preset="light">Dark Street &amp; Sparking Pole</button>
+              </div>
+
+              <form id="grievanceForm" novalidate>
+                <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(0,229,255,0.06);border:1px solid var(--border-cyan);padding:0.65rem 0.9rem;border-radius:var(--radius-md);margin-bottom:1rem;gap:0.75rem;">
+                  <div>
+                    <div style="font-size:0.84rem;font-weight:700;color:#ffffff;">Optional Identity Privacy Shield</div>
+                    <div style="font-size:0.74rem;color:var(--text-muted);">Report anonymously while keeping full tracking &amp; officer accountability.</div>
+                  </div>
+                  <label style="display:inline-flex;align-items:center;gap:0.4rem;font-size:0.82rem;font-weight:700;color:var(--neon-cyan);cursor:pointer;">
+                    <input type="checkbox" id="anonShieldCheck" style="width:16px;height:16px;accent-color:#00e5ff;" />
+                    Shield Name
+                  </label>
+                </div>
+
+                <div class="form-grid">
+                  <div class="form-group">
+                    <label class="form-label" for="reportNameInput">Citizen Name <span class="req">*</span></label>
+                    <input type="text" id="reportNameInput" class="form-control" />
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label" for="reportWardSelect">Municipal Ward <span class="req">*</span></label>
+                    <select id="reportWardSelect" class="form-control">
+                      <option value="Ward 14 - North Anna Nagar">Ward 14 &mdash; North Anna Nagar</option>
+                      <option value="Ward 05 - Central MG Road">Ward 05 &mdash; Central MG Road</option>
+                      <option value="Ward 19 - East Adyar & Besant">Ward 19 &mdash; East Adyar &amp; Besant</option>
+                      <option value="Ward 28 - South Velachery">Ward 28 &mdash; South Velachery</option>
+                      <option value="Ward 32 - West Porur Corridor">Ward 32 &mdash; West Porur Corridor</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group full">
+                    <label class="form-label" for="reportLandmarkInput">Exact Street / Residence Landmark <span class="req">*</span></label>
+                    <input type="text" id="reportLandmarkInput" class="form-control" placeholder="e.g., Outside St. Joseph's School Gate, 2nd Avenue" />
+                  </div>
+
+                  <div class="form-group full">
+                    <label class="form-label" for="reportDescInput">Describe What Happened <span class="req">*</span></label>
+                    <textarea id="reportDescInput" class="form-control" placeholder="Tell CivicAI what you are seeing or feeling... As you type, our empathetic AI validates your concern and assigns the Officer In-Charge."></textarea>
+                  </div>
+
+                  <!-- Sample Pothole Photo Evidence Picker -->
+                  <div class="form-group full">
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+                      <label class="form-label" style="margin:0;">Sample Pothole Photo Evidence (Click to Attach AI-Scanned Visual)</label>
+                      <label class="btn btn-cyan btn-sm" style="cursor:pointer;">
+                        Upload Own Photo
+                        <input type="file" id="customFileInput" accept="image/*" style="display:none;" />
+                      </label>
+                    </div>
+
+                    <div class="pothole-grid" id="potholePickerGrid">
+                      <button type="button" class="pothole-item" data-sample-idx="0">
+                        <div class="pothole-thumb" id="potholeThumb0"></div>
+                        <div style="font-size:0.78rem;font-weight:700;color:#ffffff;">Sample 1: Deep Urban Crater</div>
+                        <div style="font-size:0.7rem;color:var(--neon-cyan);">99.2% Conf &bull; Ward 12 School</div>
+                      </button>
+                      <button type="button" class="pothole-item" data-sample-idx="1">
+                        <div class="pothole-thumb" id="potholeThumb1"></div>
+                        <div style="font-size:0.78rem;font-weight:700;color:#ffffff;">Sample 2: Waterlogged Lane Pit</div>
+                        <div style="font-size:0.7rem;color:#ff7ab8;">97.6% Conf &bull; Ward 08 Yellow Line</div>
+                      </button>
+                      <button type="button" class="pothole-item" data-sample-idx="2">
+                        <div class="pothole-thumb" id="potholeThumb2"></div>
+                        <div style="font-size:0.78rem;font-weight:700;color:#ffffff;">Sample 3: Fractured Pavement</div>
+                        <div style="font-size:0.7rem;color:var(--neon-cyan);">98.4% Conf &bull; Ward 14 Cross Rd</div>
+                      </button>
+                    </div>
+                    <div class="evidence-preview-card" id="attachedEvidencePreview">
+                      <div style="width:150px;flex-shrink:0;" id="attachedEvidenceVisual"></div>
+                      <div style="flex:1;min-width:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:0.4rem;margin-bottom:0.2rem;">
+                          <span class="badge badge-resolved" style="font-size:0.68rem;">AI Vision Photo Attached</span>
+                          <button type="button" class="btn btn-pink btn-sm" style="padding:0.2rem 0.55rem;font-size:0.72rem;" id="clearEvidenceBtn">Remove</button>
+                        </div>
+                        <div style="font-size:0.84rem;font-weight:700;color:#ffffff;" id="attachedEvidenceTitle"></div>
+                        <div style="font-size:0.74rem;color:var(--neon-cyan);margin-top:0.15rem;" id="attachedEvidenceMeta"></div>
+                      </div>
+                    </div>
+                    <div id="photoStatusLine" style="font-size:0.77rem;color:var(--neon-cyan);margin-top:0.4rem;"></div>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn btn-neon" style="width:100%;margin-top:0.4rem;">
+                  <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                  Submit Grievance &amp; Connect with Your AI Friend
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Right: Live Empathetic AI Companion & Assigned Officer In-Charge -->
+          <div style="display:flex;flex-direction:column;gap:1.25rem;">
+            <div class="card pink-glow">
+              <div class="card-header">
+                <div class="card-title">
+                  <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ff2a85" stroke-width="2.2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                  CivicAI Empathetic Companion
+                </div>
+                <span class="badge badge-critical">Listening With Care</span>
+              </div>
+
+              <div class="card-body">
+                <div class="empathy-panel">
+                  <div class="empathy-tag">
+                    <span>&#9829;</span>
+                    <span id="liveEmpathyHeader">Validation &amp; Presence</span>
+                  </div>
+                  <div class="empathy-quote" id="liveEmpathyText">
+                    &ldquo;I&rsquo;m here with you. Please share what&rsquo;s weighing on your neighborhood&mdash;that must be frustrating to carry alone, and we will walk through getting it resolved together.&rdquo;
+                  </div>
+                  <div class="empathy-assurance" id="liveEmpathyTip">
+                    <strong>What feels most helpful right now?</strong> Type your issue or pick a quick scenario on the left to see instant officer assignment.
+                  </div>
+                </div>
+
+                <!-- Assigned Officer In-Charge Card -->
+                <div class="officer-assigned-box">
+                  <div>
+                    <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--neon-cyan);font-weight:800;">
+                      Assigned Officer In-Charge
+                    </div>
+                    <div style="font-size:0.95rem;font-weight:800;color:#ffffff;" id="liveOfficerName">
+                      Er. Karthikeyan V. (Executive Engineer)
+                    </div>
+                    <div style="font-size:0.78rem;color:var(--text-muted);" id="liveOfficerDept">
+                      Highways &amp; Road Maintenance Dept &bull; SLA: 12 Hours
+                    </div>
+                  </div>
+                  <button type="button" class="btn btn-cyan btn-sm" id="liveOfficerCallBtn" data-phone="+91 98401 22410">
+                    <svg class="icon-xs" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                    <span id="liveOfficerPhoneText">+91 98401 22410</span>
+                  </button>
+                </div>
+
+                <!-- Triage Telemetry Pills -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.9rem;">
+                  <div style="background:rgba(4,6,13,0.75);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:0.75rem;">
+                    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Detected Category</div>
+                    <div style="font-size:0.9rem;font-weight:700;color:#ffffff;margin-top:0.2rem;" id="liveCatLabel">Roads &amp; Potholes</div>
+                  </div>
+                  <div style="background:rgba(4,6,13,0.75);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:0.75rem;">
+                    <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;font-weight:700;">Urgency Priority</div>
+                    <div style="margin-top:0.25rem;" id="livePrioBadge"><span class="badge badge-high">High Priority</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Satisfied Citizen Highlight Card -->
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Why Neighbors Love CivicResolve</div>
+                <span class="badge badge-resolved">58+ Satisfied Responses</span>
+              </div>
+              <div class="card-body" style="display:grid;gap:0.75rem;">
+                <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:0.85rem;">
+                  <div style="color:#fbbf24;font-size:0.9rem;">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                  <p style="font-size:0.85rem;color:var(--text-secondary);margin:0.25rem 0;">
+                    &ldquo;Thank you, this was really helpful! The AI calmed me down right after I reported the waterlogged pothole, and Engineer Karthikeyan&rsquo;s crew patched it the next morning.&rdquo;
+                  </p>
+                  <div style="font-size:0.74rem;color:var(--neon-cyan);font-weight:700;">&mdash; Revathi Balasubramanian, Ward 14 Resident</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 2: OFFICERS IN-CHARGE DIRECTORY (WITH DUMMY DIRECT PHONE NUMBERS)
+           ==================================================================== -->
+      <section id="tab-officers" class="tab-panel">
+        <div style="margin-bottom:1.25rem;">
+          <h2 style="font-size:1.45rem;font-weight:800;color:#ffffff;">Verified Officers In-Charge Directory</h2>
+          <p style="font-size:0.9rem;color:var(--text-muted);">
+            Direct accountability for every citizen. Click any Officer&rsquo;s helpline number to copy or initiate a priority civic call.
+          </p>
+        </div>
+        <div class="officers-grid" id="officersDirectoryGrid"></div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 3: 50+ SATISFIED RESPONSES & POTHOLE AI VISION GALLERY
+           ==================================================================== -->
+      <section id="tab-voices" class="tab-panel">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;">
+          <div>
+            <h2 style="font-size:1.45rem;font-weight:800;color:#ffffff;">50+ Satisfied Responses &amp; Citizen Stories</h2>
+            <p style="font-size:0.9rem;color:var(--text-muted);">
+              Real gratitude from local citizens whose neighborhood concerns were heard with empathy and solved on time.
+            </p>
+          </div>
+          <div class="satisfied-pill">&#9733; <strong id="voicesTotalBadge">58+</strong> Satisfied Responses &bull; 4.9/5 Trust Score</div>
+        </div>
+
+        <div class="testimonials-grid" id="testimonialsGrid" style="margin-bottom:2.25rem;"></div>
+
+        <h3 style="font-size:1.25rem;font-weight:800;color:#ffffff;margin-bottom:0.85rem;">
+          AI Vision Pothole &amp; Road Hazard Samples
+        </h3>
+        <div class="officers-grid" id="potholeGalleryGrid"></div>
+      </section>
+
+      <!-- ====================================================================
+           TAB 4: LIVE TRACKER & PUBLIC TRANSPARENCY ANALYTICS
+           ==================================================================== -->
+      <section id="tab-track" class="tab-panel">
+        <div class="card cyan-glow" style="margin-bottom:1.5rem;">
+          <div class="card-body">
+            <div style="display:flex;gap:0.65rem;flex-wrap:wrap;margin-bottom:0.75rem;">
+              <input type="text" id="trackSearchInput" class="form-control" style="flex:1;min-width:220px;font-family:var(--font-mono);font-weight:700;" placeholder="Enter Tracking ID (e.g., CR-2026-8841)" />
+              <button type="button" class="btn btn-neon" id="trackSearchBtn">Track Live Status</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.45rem;flex-wrap:wrap;font-size:0.8rem;color:var(--text-muted);">
+              <span>Your &amp; Sample Tickets:</span>
+              <div id="trackChipsWrap" style="display:inline-flex;gap:0.4rem;flex-wrap:wrap;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="trackResultCard" style="margin-bottom:1.5rem;"></div>
+
+        <div class="grid-2-col" style="grid-template-columns:1fr 1fr;">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Municipal SLA Compliance</div><span class="badge badge-resolved">Live Audit</span></div>
+            <div class="card-body" id="slaChartBars"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Citizen Emotional Trust &amp; Satisfaction</div><span class="badge badge-progress">58+ Verified</span></div>
+            <div class="card-body" id="trustChartBars"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ========================================================================
+       FULL-SCREEN EMPATHETIC POST-SUBMISSION OVERLAY ("YOUR FRIEND")
+       ======================================================================== -->
+  <div class="fullscreen-overlay" id="postSubmitOverlay" role="dialog" aria-modal="true" aria-labelledby="overlayWaitHeading">
+    <div class="friend-modal">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;">
+        <span class="badge badge-resolved">&#10003; Grievance Logged &amp; Officer Dispatched</span>
+        <span style="font-family:var(--font-mono);font-weight:800;color:var(--neon-cyan);font-size:0.95rem;" id="overlayTicketId">CR-2026-9001</span>
+      </div>
+
+      <!-- Empathetic Therapeutic Validation Response -->
+      <div class="validation-card">
+        <div style="font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#ff7ab8;margin-bottom:0.4rem;">
+          &#9829; CivicAI Empathetic Response
+        </div>
+        <p style="font-size:1.02rem;color:#ffffff;line-height:1.6;margin-bottom:0.75rem;" id="overlayEmpathyMessage">
+          &ldquo;I deeply feel sorry that you have had to carry this stress. That sounds really heavy, and no wonder you&rsquo;re upset&mdash;this matters, and you don&rsquo;t have to deal with it alone. I&rsquo;m right here with you.&rdquo;
+        </p>
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;padding-top:0.65rem;border-top:1px dashed rgba(255,255,255,0.18);font-size:0.84rem;">
+          <span style="color:var(--text-secondary);">
+            Assigned Officer: <strong style="color:#ffffff;" id="overlayOfficerName">Er. Karthikeyan V.</strong>
+          </span>
+          <button type="button" class="btn btn-cyan btn-sm" id="overlayOfficerCallBtn">
+            Call Officer: <strong id="overlayOfficerPhone">+91 98401 22410</strong>
+          </button>
+        </div>
+      </div>
+
+      <!-- Enlarged Required Heading -->
+      <h2 class="enlarged-wait-heading" id="overlayWaitHeading">
+        While you wait for your grievance to be solved
+      </h2>
+
+      <!-- Mindset Verification Row with "I'm okay" Button -->
+      <div class="mindset-check-bar">
+        <div>
+          <div style="font-size:0.9rem;font-weight:700;color:#ffffff;">Gentle Mindset &amp; Well-Being Check-In</div>
+          <div style="font-size:0.8rem;color:var(--text-muted);" id="mindsetStatusText">
+            Take a deep breath. Verify how you&rsquo;re feeling right now&mdash;your peace of mind comes first.
+          </div>
+        </div>
+        <button type="button" class="btn btn-emerald" id="imOkayBtn">
+          &#10003; I&rsquo;m okay
+        </button>
+      </div>
+
+      <!-- Two Primary Action Options Below -->
+      <div class="overlay-actions-row">
+        <button type="button" class="btn btn-neon" id="startFriendChatBtn">
+          <svg class="icon-sm" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          Start Chat &ndash; Your Friend
+        </button>
+        <button type="button" class="btn btn-pink" id="closeOverlayBtn">
+          Close &amp; Track Ticket
+        </button>
+      </div>
+
+      <!-- Interactive Empathetic Friend Chat Drawer -->
+      <div class="friend-chat-box" id="friendChatDrawer">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.55rem;">
+          <strong style="font-size:0.88rem;color:var(--neon-cyan);">&#9829; Your Friend &mdash; Empathetic AI Companion</strong>
+          <span style="font-size:0.74rem;color:var(--text-muted);">No pressure &bull; Share freely</span>
+        </div>
+        <div class="chat-messages" id="friendChatMessages"></div>
+        <div class="chip-row" style="margin-bottom:0.65rem;">
+          <button type="button" class="chip-btn" data-friend-prompt="I feel frustrated that this issue took so long to get noticed.">I feel frustrated</button>
+          <button type="button" class="chip-btn" data-friend-prompt="I'm worried about safety on my street tonight.">I'm worried about safety</button>
+          <button type="button" class="chip-btn" data-friend-prompt="Can we do a quick calming check-in while I wait?">Help me stay calm</button>
+        </div>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" id="friendChatInput" class="form-control" placeholder="Tell me more if you want to share..." />
+          <button type="button" class="btn btn-neon btn-sm" id="sendFriendMsgBtn">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    (function () {
+      "use strict";
+
+      /* ========================================================================
+         1. REAL-LIFE POTHOLE EVIDENCE SAMPLES + OFFLINE ASPHALT FALLBACK
+         ======================================================================== */
+      const ASPHALT_FALLBACK_URI = "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(
+        `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300">
+          <defs>
+            <radialGradient id="pit" cx="50%" cy="52%" r="42%">
+              <stop offset="0%" stop-color="#06080f"/>
+              <stop offset="68%" stop-color="#171d2c"/>
+              <stop offset="100%" stop-color="#2a3245"/>
+            </radialGradient>
+          </defs>
+          <rect width="480" height="300" fill="#232a3b"/>
+          <path d="M0,42 L480,42" stroke="#eab308" stroke-width="5" stroke-dasharray="22 14" opacity="0.75"/>
+          <polygon points="105,152 148,96 242,84 342,102 374,158 344,216 254,234 156,222 114,186" fill="url(#pit)" stroke="#475569" stroke-width="4"/>
+          <polygon points="132,156 168,112 242,102 320,116 344,158 318,200 246,214 168,204 138,178" fill="#0d1322" opacity="0.9"/>
+          <text x="16" y="282" font-family="monospace" font-size="13" fill="#94a3b8">OFFLINE ASPHALT CACHE • AI TELEMETRY ACTIVE</text>
+        </svg>`
+      );
+
+      const POTHOLE_SAMPLES = [
+        {
+          title: "Deep Urban Asphalt Crater — Ward 12 School Zone",
+          ward: "Ward 14 - North Anna Nagar",
+          landmark: "4th Avenue Main Gate, Ward 12 School Zone",
+          desc: "Deep urban asphalt crater right outside the 4th Avenue school zone main gate posing a severe hazard to school buses, cyclists, and two-wheelers.",
+          bboxLabel: "CRATER_CAVITY • 99.2% CONF • DEPTH ~16cm",
+          locationLabel: "4th Avenue Main Gate, Ward 12",
+          statusBadge: "REPAIRED IN 18H",
+          boxTheme: "pink",
+          telemetry: "CRATER_CAVITY • 99.2% CONF • DEPTH ~16cm | REPAIRED IN 18H",
+          imgUrl: "https://static.vecteezy.com/system/resources/previews/073/752/035/non_2x/large-pothole-in-urban-road-during-winter-surrounded-by-buildings-and-leafless-trees-free-photo.jpg"
+        },
+        {
+          title: "Waterlogged Pothole Along Double Yellow Lane — Ward 08",
+          ward: "Ward 05 - Central MG Road",
+          landmark: "Lakeview Connector Rd, Ward 08",
+          desc: "Submerged waterlogged pothole directly along the double yellow lane edge on Lakeview Connector Rd, hiding its depth and causing sudden vehicle swerves.",
+          bboxLabel: "SUBMERGED_HAZARD • 97.6% CONF • LANE EDGE",
+          locationLabel: "Lakeview Connector Rd, Ward 08",
+          statusBadge: "CREW DISPATCHED",
+          boxTheme: "cyan",
+          telemetry: "SUBMERGED_HAZARD • 97.6% CONF • LANE EDGE | CREW DISPATCHED",
+          imgUrl: "https://plus.unsplash.com/premium_photo-1769344475633-cc4e387767a1?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D"
+        },
+        {
+          title: "Severe Fractured Asphalt & Buckled Pavement — Ward 14",
+          ward: "Ward 14 - North Anna Nagar",
+          landmark: "Station Cross Road, Ward 14",
+          desc: "Severe surface collapse with fractured asphalt chunks and loose gravel debris across Station Cross Road creating an immediate high-skid risk.",
+          bboxLabel: "SURFACE_COLLAPSE • 98.4% CONF • HIGH SKID RISK",
+          locationLabel: "Station Cross Road, Ward 14",
+          statusBadge: "VERIFIED & ASSIGNED",
+          boxTheme: "pink",
+          telemetry: "SURFACE_COLLAPSE • 98.4% CONF • HIGH SKID RISK | VERIFIED & ASSIGNED",
+          imgUrl: "https://media.istockphoto.com/id/2164418769/photo/a-cracked-road-with-a-lot-of-debris.jpg?s=612x612&w=0&k=20&c=rovHc1Xd8eqGiezVI2OxQW34MNzVg39mxyyaUfFpwOY="
+        }
+      ];
+
+      function renderAIVisionPhotoMarkup(sample, compact) {
+        const tagText = compact ? sample.bboxLabel.split("•").slice(0, 2).join("•").trim() : sample.bboxLabel;
+        return `
+          <div class="ai-photo-stage">
+            <img src="${escapeHtml(sample.imgUrl)}" alt="${escapeHtml(sample.title)}" loading="lazy" onerror="this.onerror=null;this.src='${ASPHALT_FALLBACK_URI}';" />
+            <div class="ai-bbox-overlay ${sample.boxTheme === "cyan" ? "cyan" : ""}">
+              <span class="ai-bbox-tag">${escapeHtml(tagText)}</span>
+            </div>
+            ${compact ? "" : `
+              <div class="ai-hud-bar">
+                <span>${escapeHtml(sample.locationLabel)}</span>
+                <span style="color:#ff7ab8;font-weight:700;">${escapeHtml(sample.statusBadge)}</span>
+              </div>
+            `}
+          </div>
+        `;
+      }
+
+      /* ========================================================================
+         2. OFFICERS IN-CHARGE DIRECTORY (WITH DUMMY DIRECT PHONE NUMBERS)
+         ======================================================================== */
+      const OFFICERS = [
+        {
+          dept: "Highways & Road Maintenance Dept",
+          keywords: ["pothole", "road", "crater", "asphalt", "skid"],
+          name: "Er. Karthikeyan V.",
+          role: "Executive Engineer (Roads & Pothole Rapid Squad)",
+          phone: "+91 98401 22410",
+          sla: "12 – 24 Hours",
+          status: "On Duty • Active"
+        },
+        {
+          dept: "Storm Water Drain & Metro Water Wing",
+          keywords: ["drain", "water", "flood", "pipe", "sewage", "pit"],
+          name: "Er. Meera Narayanan",
+          role: "Zonal Superintendent Engineer (Drainage & Water)",
+          phone: "+91 98401 33918",
+          sla: "6 – 12 Hours",
+          status: "On Duty • Rapid Unit"
+        },
+        {
+          dept: "Municipal Electrical & Smart Lighting",
+          keywords: ["light", "dark", "spark", "wire", "pole", "electric"],
+          name: "Er. Pradeep Kumar S.",
+          role: "Chief Electrical Officer (Streetlights & Grid Safety)",
+          phone: "+91 98401 44721",
+          sla: "6 Hours",
+          status: "24/7 Emergency Duty"
+        },
+        {
+          dept: "Solid Waste & Conservancy Dept",
+          keywords: ["garbage", "waste", "trash", "clean", "smell"],
+          name: "Smt. Anitha Rajendran",
+          role: "Zonal Health & Conservancy Officer",
+          phone: "+91 98401 55809",
+          sla: "24 Hours",
+          status: "On Duty • Active"
+        },
+        {
+          dept: "24/7 Citizen Emergency & Vigilance Desk",
+          keywords: [],
+          name: "Thiru. S. Balaji, IAS (Coord.)",
+          role: "Central Civic Redressal Commissionerate",
+          phone: "1800-425-7099",
+          sla: "Immediate Escalation",
+          status: "24/7 Control Room"
+        }
+      ];
+
+      /* ========================================================================
+         3. APPLICATION STATE & 58+ SATISFIED CITIZEN TESTIMONIALS
+         ======================================================================== */
+      let currentUser = {
+        name: "Aarav Sundaram",
+        residence: "2nd Avenue, Anna Nagar",
+        ward: "Ward 14 - North Anna Nagar"
+      };
+
+      let satisfiedCount = 58;
+      let selectedSampleIdx = null;
+      let lastSubmittedTicket = null;
+
+      let tickets = [
+        {
+          id: "CR-2026-8841",
+          citizen: "Revathi Balasubramanian",
+          ward: "Ward 14 - North Anna Nagar",
+          landmark: "2nd Avenue, Outside DAV School",
+          category: "Roads & Potholes",
+          description: "Deep waterlogged pothole near school crossing causing two-wheelers to skid.",
+          priority: "Critical",
+          officer: OFFICERS[0],
+          status: "Resolved",
+          note: "Hot-mix asphalt patching completed and inspected by Er. Karthikeyan V.",
+          sampleIdx: 0
+        },
+        {
+          id: "CR-2026-8842",
+          citizen: "Anonymous Citizen (Shielded)",
+          ward: "Ward 05 - Central MG Road",
+          landmark: "Near Metro Exit B, MG Road",
+          category: "Storm Water Drain & Safety",
+          description: "Collapsed storm drain slab leaving an open pit beside the pedestrian path.",
+          priority: "Critical",
+          officer: OFFICERS[1],
+          status: "In Progress",
+          note: "Safety barricades placed within 35 mins; replacement RCC slab en route.",
+          sampleIdx: 2
+        },
+        {
+          id: "CR-2026-8843",
+          citizen: "Senthil Nathan",
+          ward: "Ward 28 - South Velachery",
+          landmark: "Velachery Main Road Bus Stop",
+          category: "Roads & Potholes",
+          description: "Wide arterial road crater slowing traffic and buses.",
+          priority: "High",
+          officer: OFFICERS[0],
+          status: "Submitted",
+          note: "AI Vision verified 1.4m crater; night patching crew assigned.",
+          sampleIdx: 1
+        }
+      ];
+
+      const TESTIMONIALS = [
+        {
+          name: "Revathi Balasubramanian",
+          ward: "Ward 14 • Anna Nagar",
+          quote: "Thank you, this was really helpful! The AI comforted me right after I reported the waterlogged pothole, and Officer Karthikeyan's crew fixed it the very next morning.",
+          tag: "Pothole Solved"
+        },
+        {
+          name: "Vigneshwar Karthik",
+          ward: "Ward 28 • Velachery",
+          quote: "I used to hesitate reporting local hazards, but CivicResolve's 'Your Friend' AI made me feel genuinely heard and respected. Truly for the citizen, by the citizen!",
+          tag: "Empathetic AI"
+        },
+        {
+          name: "Dr. Padma Rajagopal",
+          ward: "Ward 19 • Adyar",
+          quote: "Having the Officer In-Charge's direct number and live progress tracker gave our whole street total confidence. Thank you so much for building this!",
+          tag: "Direct Officer Line"
+        },
+        {
+          name: "Mohammed Imran",
+          ward: "Ward 05 • Central MG Road",
+          quote: "The identity privacy shield let me report a sparking streetlight pole safely without any hesitation. Resolved in under 5 hours!",
+          tag: "Safe & Anonymous"
+        },
+        {
+          name: "Lakshmi Narayanan",
+          ward: "Ward 32 • Porur",
+          quote: "Thank you, this was really helpful for senior citizens in our colony! Uploading the pothole photo took seconds and the AI understood everything.",
+          tag: "AI Photo Vision"
+        },
+        {
+          name: "Ananya Krishnan",
+          ward: "Ward 14 • North Zone",
+          quote: "The post-submission check-in ('While you wait for your grievance to be solved') felt so human and reassuring. Best civic platform I have ever used.",
+          tag: "58+ Satisfied"
+        }
+      ];
+
+      /* ========================================================================
+         4. HELPER UTILITIES
+         ======================================================================== */
+      function escapeHtml(str) {
+        return String(str || "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;");
+      }
+
+      function showToast(msg) {
+        const stack = document.getElementById("toastStack");
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.textContent = msg;
+        stack.appendChild(el);
+        setTimeout(() => {
+          el.style.opacity = "0";
+          el.style.transition = "opacity 0.25s ease";
+          setTimeout(() => el.remove(), 250);
+        }, 3400);
+      }
+
+      function copyTextToClipboard(text, label) {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          showToast(label || `Copied ${text} to clipboard!`);
+        } catch (err) {
+          showToast(label || text);
+        }
+        document.body.removeChild(ta);
+      }
+
+      function analyzeIssueEmpathetically(desc) {
+        const text = (desc || "").trim().toLowerCase();
+        if (!text) {
+          return {
+            tag: "Validation & Presence",
+            empathy: "“I’m here with you. Please share what’s weighing on your neighborhood—that must be frustrating to carry alone, and we will walk through getting it resolved together.”",
+            tip: "What feels most helpful right now? Describe your issue or pick a quick scenario on the left.",
+            category: "Roads & Potholes",
+            priority: "High",
+            officer: OFFICERS[0]
+          };
+        }
+
+        if (text.includes("light") || text.includes("dark") || text.includes("spark") || text.includes("pole") || text.includes("wire")) {
+          return {
+            tag: "Validation & Immediate Safety Care",
+            empathy: "“I deeply feel sorry that you’re dealing with a dark or sparking electrical hazard. That sounds really heavy and frightening—no wonder you’re upset. I’m right here with you, and we are alerting the Electrical Rapid Squad immediately.”",
+            tip: "Safety First: Please stay clear of the pole/wires. Er. Pradeep Kumar S. has been flagged for 6-hour emergency response.",
+            category: "Streetlights & Grid Safety",
+            priority: "Critical",
+            officer: OFFICERS[2]
+          };
+        }
+
+        if (text.includes("drain") || text.includes("water") || text.includes("flood") || text.includes("pit") || text.includes("sewage")) {
+          return {
+            tag: "Acknowledging Your Frustration",
+            empathy: "“I deeply feel sorry that your street is facing drainage or waterlogging trouble—that must be so hard to carry every day. You don’t have to face this alone; we are routing this straight to Zonal Drainage Engineering.”",
+            tip: "Direct Accountability: Er. Meera Narayanan’s rapid drainage team is assigned with GPS coordinates.",
+            category: "Storm Water Drain & Water",
+            priority: "Critical",
+            officer: OFFICERS[1]
+          };
+        }
+
+        if (text.includes("garbage") || text.includes("waste") || text.includes("trash") || text.includes("smell")) {
+          return {
+            tag: "Supporting Your Neighborhood",
+            empathy: "“I deeply feel sorry that uncollected waste has been disrupting your home environment. I can see how much your community matters to you—thank you for speaking up so we can get it cleared swiftly.”",
+            tip: "Action Dispatched: Smt. Anitha Rajendran’s conservancy team has been scheduled for clearance.",
+            category: "Solid Waste & Conservancy",
+            priority: "Medium",
+            officer: OFFICERS[3]
+          };
+        }
+
+        return {
+          tag: "Validation & Acknowledging Pain",
+          empathy: "“I deeply feel sorry that you and your neighbors have to navigate this dangerous road hazard. That sounds really heavy, and no wonder you’re upset—your safety matters deeply to us, and we’re acting on this right away.”",
+          tip: "Direct Escalation: Er. Karthikeyan V. (Highways & Pothole Squad) is assigned with priority SLA protection.",
+          category: "Roads & Potholes",
+          priority: text.includes("deep") || text.includes("water") || text.includes("school") ? "Critical" : "High",
+          officer: OFFICERS[0]
+        };
+      }
+
+      function syncSatisfiedCounters() {
+        document.getElementById("topSatisfiedCount").textContent = `${satisfiedCount}+`;
+        document.getElementById("headerSatisfiedCount").textContent = `${satisfiedCount}+`;
+        document.getElementById("heroSatisfiedStat").textContent = `${satisfiedCount}+`;
+        const voicesBadge = document.getElementById("voicesTotalBadge");
+        if (voicesBadge) voicesBadge.textContent = `${satisfiedCount}+`;
+        document.getElementById("navTicketCount").textContent = tickets.length;
+      }
+
+      /* ========================================================================
+         5. LOGIN PORTAL -> MAIN PLATFORM REDIRECT
+         ======================================================================== */
+      function enterPlatform(name, residence, ward) {
+        currentUser = { name, residence, ward };
+        document.getElementById("loginPortal").classList.add("hidden");
+        document.getElementById("mainApp").classList.add("visible");
+
+        document.getElementById("headerCitizenLabel").textContent = `${name} • ${ward.split("-")[0].trim()}`;
+        document.getElementById("personalGreetingHeading").textContent = `Welcome home, ${name} of ${residence}!`;
+        document.getElementById("reportNameInput").value = name;
+        document.getElementById("reportWardSelect").value = ward;
+        document.getElementById("reportLandmarkInput").value = residence;
+
+        showToast(`Welcome, ${name}! Your neighborhood safety shield is active.`);
+      }
+
+      document.getElementById("citizenLoginForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const name = document.getElementById("loginNameInput").value.trim();
+        const residence = document.getElementById("loginResidenceInput").value.trim();
+        const ward = document.getElementById("loginWardSelect").value;
+        if (!name || !residence) {
+          showToast("Please enter your Name and Residence to enter.");
+          return;
+        }
+        enterPlatform(name, residence, ward);
+      });
+
+      document.getElementById("quickJudgeLoginBtn").addEventListener("click", () => {
+        document.getElementById("loginNameInput").value = "Aarav Sundaram";
+        document.getElementById("loginResidenceInput").value = "2nd Avenue, Anna Nagar";
+        document.getElementById("loginWardSelect").value = "Ward 14 - North Anna Nagar";
+        enterPlatform("Aarav Sundaram", "2nd Avenue, Anna Nagar", "Ward 14 - North Anna Nagar");
+      });
+
+      document.getElementById("switchUserBtn").addEventListener("click", () => {
+        document.getElementById("mainApp").classList.remove("visible");
+        document.getElementById("loginPortal").classList.remove("hidden");
+      });
+
+      /* ========================================================================
+         6. NAVIGATION TABS & DYNAMIC RENDERERS
+         ======================================================================== */
+      function switchTab(tabId) {
+        document.querySelectorAll(".nav-tab").forEach((t) => {
+          t.classList.toggle("active", t.dataset.tab === tabId);
+        });
+        document.querySelectorAll(".tab-panel").forEach((p) => {
+          p.classList.toggle("active", p.id === `tab-${tabId}`);
+        });
+        if (tabId === "officers") renderOfficersDirectory();
+        if (tabId === "voices") renderVoicesAndGallery();
+        if (tabId === "track") renderTrackerView();
+      }
+
+      document.querySelectorAll(".nav-tab").forEach((btn) => {
+        btn.addEventListener("click", () => switchTab(btn.dataset.tab));
+      });
+
+      function renderOfficersDirectory() {
+        const grid = document.getElementById("officersDirectoryGrid");
+        grid.innerHTML = OFFICERS.map(
+          (off) => `
+          <div class="officer-card">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+                <span class="badge badge-resolved">${escapeHtml(off.status)}</span>
+                <span style="font-size:0.74rem;color:var(--neon-cyan);font-weight:700;">SLA: ${escapeHtml(off.sla)}</span>
+              </div>
+              <h3 style="font-size:1.05rem;font-weight:800;color:#ffffff;margin-bottom:0.2rem;">${escapeHtml(off.name)}</h3>
+              <div style="font-size:0.8rem;color:#ff7ab8;font-weight:600;margin-bottom:0.45rem;">${escapeHtml(off.role)}</div>
+              <div style="font-size:0.82rem;color:var(--text-muted);">${escapeHtml(off.dept)}</div>
+            </div>
+            <div style="padding-top:0.75rem;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+              <span style="font-family:var(--font-mono);font-weight:800;color:var(--neon-cyan);font-size:0.92rem;">${escapeHtml(off.phone)}</span>
+              <button type="button" class="btn btn-cyan btn-sm" data-call-officer="${escapeHtml(off.phone)}" data-officer-name="${escapeHtml(off.name)}">
+                Call / Copy
+              </button>
+            </div>
+          </div>`
+        ).join("");
+
+        grid.querySelectorAll("[data-call-officer]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            copyTextToClipboard(
+              btn.dataset.callOfficer,
+              `Officer ${btn.dataset.officerName}'s direct number (${btn.dataset.callOfficer}) copied & ready to dial!`
+            );
+          });
+        });
+      }
+
+      function renderVoicesAndGallery() {
+        document.getElementById("testimonialsGrid").innerHTML = TESTIMONIALS.map(
+          (t) => `
+          <div class="testimonial-card">
+            <div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.45rem;">
+                <span style="color:#fbbf24;">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+                <span class="badge badge-resolved">${escapeHtml(t.tag)}</span>
+              </div>
+              <p style="font-size:0.88rem;color:var(--text-secondary);font-style:italic;">&ldquo;${escapeHtml(t.quote)}&rdquo;</p>
+            </div>
+            <div style="border-top:1px solid var(--border-subtle);padding-top:0.65rem;font-size:0.78rem;">
+              <strong style="color:#ffffff;">${escapeHtml(t.name)}</strong>
+              <div style="color:var(--neon-cyan);font-size:0.73rem;">${escapeHtml(t.ward)}</div>
+            </div>
+          </div>`
+        ).join("");
+
+        document.getElementById("potholeGalleryGrid").innerHTML = POTHOLE_SAMPLES.map(
+          (s, idx) => `
+          <div class="card cyan-glow">
+            ${renderAIVisionPhotoMarkup(s, false)}
+            <div class="card-body">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;margin-bottom:0.45rem;flex-wrap:wrap;">
+                <span class="badge ${s.statusBadge === "REPAIRED IN 18H" ? "badge-resolved" : s.statusBadge === "CREW DISPATCHED" ? "badge-progress" : "badge-critical"}">${escapeHtml(s.statusBadge)}</span>
+                <span style="font-size:0.74rem;color:var(--neon-cyan);font-weight:700;">${escapeHtml(s.locationLabel)}</span>
+              </div>
+              <strong style="color:#ffffff;font-size:0.95rem;display:block;margin-bottom:0.3rem;">${escapeHtml(s.title)}</strong>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.55rem;">${escapeHtml(s.desc)}</p>
+              <div style="font-family:var(--font-mono);font-size:0.71rem;color:var(--neon-cyan);background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.22);padding:0.45rem 0.65rem;border-radius:var(--radius-sm);margin-bottom:0.75rem;">
+                ${escapeHtml(s.bboxLabel)}
+              </div>
+              <button type="button" class="btn btn-pink btn-sm" style="width:100%;" data-use-sample="${idx}">
+                Use Sample Photo in Report
+              </button>
+            </div>
+          </div>`
+        ).join("");
+
+        document.querySelectorAll("[data-use-sample]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const idx = Number(btn.dataset.useSample);
+            switchTab("report");
+            const pickerBtn = document.querySelector(`[data-sample-idx="${idx}"]`);
+            if (pickerBtn) {
+              pickerBtn.click();
+              document.getElementById("grievanceForm")?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }
+          });
+        });
+      }
+
+      function renderTrackerView() {
+        const chips = document.getElementById("trackChipsWrap");
+        chips.innerHTML = tickets
+          .map(
+            (t) =>
+              `<button type="button" class="chip-btn" data-track-id="${escapeHtml(t.id)}">${escapeHtml(t.id)} (${escapeHtml(t.status)})</button>`
+          )
+          .join("");
+
+        chips.querySelectorAll("[data-track-id]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            document.getElementById("trackSearchInput").value = btn.dataset.trackId;
+            renderSingleTicket(btn.dataset.trackId);
+          });
+        });
+
+        const currentId = document.getElementById("trackSearchInput").value.trim() || tickets[0].id;
+        document.getElementById("trackSearchInput").value = currentId;
+        renderSingleTicket(currentId);
+
+        document.getElementById("slaChartBars").innerHTML = [
+          { label: "Highways & Pothole Patching", pct: 95, color: "linear-gradient(90deg,#00e5ff,#3b82f6)" },
+          { label: "Electrical & Streetlights", pct: 98, color: "linear-gradient(90deg,#ff2a85,#a855f7)" },
+          { label: "Storm Water & Drainage", pct: 92, color: "linear-gradient(90deg,#00e5ff,#10b981)" }
+        ]
+          .map(
+            (b) => `
+            <div class="bar-row">
+              <div class="bar-meta"><span>${b.label}</span><strong>${b.pct}% On-Time</strong></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${b.pct}%;background:${b.color};"></div></div>
+            </div>`
+          )
+          .join("");
+
+        document.getElementById("trustChartBars").innerHTML = [
+          { label: "Empathetic AI Comfort & Validation", pct: 99, color: "#ff2a85" },
+          { label: "Direct Officer Phone Transparency", pct: 97, color: "#00e5ff" },
+          { label: "Zero-Hesitation Citizen Confidence", pct: 98, color: "#10b981" }
+        ]
+          .map(
+            (b) => `
+            <div class="bar-row">
+              <div class="bar-meta"><span>${b.label}</span><strong>${b.pct}% Positive</strong></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${b.pct}%;background:${b.color};"></div></div>
+            </div>`
+          )
+          .join("");
+      }
+
+      function renderSingleTicket(idQuery) {
+        const container = document.getElementById("trackResultCard");
+        const t = tickets.find((x) => x.id.toUpperCase() === idQuery.trim().toUpperCase());
+        if (!t) {
+          container.innerHTML = `<div class="card"><div class="card-body" style="color:#ff7ab8;text-align:center;">No ticket found for "${escapeHtml(idQuery)}". Click any ticket chip above.</div></div>`;
+          return;
+        }
+        const stages = ["Submitted", "In Progress", "Resolved"];
+        const idxNow = stages.indexOf(t.status);
+        const sampleVisual = t.sampleIdx !== null && POTHOLE_SAMPLES[t.sampleIdx]
+          ? renderAIVisionPhotoMarkup(POTHOLE_SAMPLES[t.sampleIdx], false)
+          : "";
+
+        container.innerHTML = `
+          <div class="card pink-glow">
+            <div class="card-header">
+              <div class="card-title">
+                <span style="font-family:var(--font-mono);color:var(--neon-cyan);">${escapeHtml(t.id)}</span>
+                &mdash; ${escapeHtml(t.category)}
+              </div>
+              <span class="badge ${t.status === "Resolved" ? "badge-resolved" : t.status === "In Progress" ? "badge-progress" : "badge-submitted"}">${escapeHtml(t.status)}</span>
+            </div>
+            <div class="card-body">
+              <div class="grid-2-col">
+                <div>
+                  <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.4rem;">
+                    <strong style="color:#ffffff;">Citizen:</strong> ${escapeHtml(t.citizen)} &bull; ${escapeHtml(t.ward)}
+                  </div>
+                  <div style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:0.75rem;">
+                    <strong style="color:#ffffff;">Landmark:</strong> ${escapeHtml(t.landmark)}
+                  </div>
+                  <p style="font-size:0.9rem;color:var(--text-secondary);background:rgba(255,255,255,0.03);padding:0.85rem;border-radius:var(--radius-md);margin-bottom:0.85rem;">
+                    ${escapeHtml(t.description)}
+                  </p>
+                  <div class="officer-assigned-box">
+                    <div>
+                      <div style="font-size:0.72rem;color:var(--neon-cyan);font-weight:800;text-transform:uppercase;">Officer In-Charge</div>
+                      <div style="font-weight:800;color:#ffffff;">${escapeHtml(t.officer.name)}</div>
+                      <div style="font-size:0.76rem;color:var(--text-muted);">${escapeHtml(t.note)}</div>
+                    </div>
+                    <button type="button" class="btn btn-cyan btn-sm" onclick="navigator.clipboard?.writeText('${escapeHtml(t.officer.phone)}')">
+                      Call: ${escapeHtml(t.officer.phone)}
+                    </button>
+                  </div>
+                </div>
+                <div>
+                  <div class="timeline">
+                    ${stages
+                      .map((st, i) => {
+                        const cls = i < idxNow || (t.status === "Resolved" && i === idxNow) ? "done" : i === idxNow ? "current" : "";
+                        return `<div class="timeline-step ${cls}">
+                          <div class="timeline-dot">${cls === "done" ? "&#10003;" : i + 1}</div>
+                          <div style="font-weight:700;color:#ffffff;">${st}</div>
+                          <div style="font-size:0.78rem;color:var(--text-muted);">${i === 0 ? "Empathetic AI Verified & Logged" : i === 1 ? "Officer Crew Dispatched to Site" : "Resolved & Citizen Satisfied"}</div>
+                        </div>`;
+                      })
+                      .join("")}
+                  </div>
+                  ${sampleVisual ? `<div style="max-width:320px;border-radius:var(--radius-md);overflow:hidden;border:1px solid var(--border-cyan);margin-top:0.75rem;">${sampleVisual}</div>` : ""}
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }
+
+      /* ========================================================================
+         7. LIVE EMPATHY & POTHOLE EVIDENCE WIRING
+         ======================================================================== */
+      POTHOLE_SAMPLES.forEach((s, idx) => {
+        const thumb = document.getElementById(`potholeThumb${idx}`);
+        if (thumb) thumb.innerHTML = renderAIVisionPhotoMarkup(s, true);
+      });
+
+      function showAttachedEvidenceCard(title, meta, visualHtml) {
+        const card = document.getElementById("attachedEvidencePreview");
+        document.getElementById("attachedEvidenceTitle").textContent = title;
+        document.getElementById("attachedEvidenceMeta").textContent = meta;
+        document.getElementById("attachedEvidenceVisual").innerHTML = visualHtml;
+        card.classList.add("visible");
+      }
+
+      document.getElementById("clearEvidenceBtn").addEventListener("click", () => {
+        selectedSampleIdx = null;
+        document.querySelectorAll("[data-sample-idx]").forEach((b) => b.classList.remove("selected"));
+        document.getElementById("attachedEvidencePreview").classList.remove("visible");
+        document.getElementById("photoStatusLine").textContent = "";
+      });
+
+      document.querySelectorAll("[data-sample-idx]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const idx = Number(btn.dataset.sampleIdx);
+          selectedSampleIdx = idx;
+          document.querySelectorAll("[data-sample-idx]").forEach((b) => b.classList.remove("selected"));
+          btn.classList.add("selected");
+          const s = POTHOLE_SAMPLES[idx];
+          document.getElementById("photoStatusLine").textContent = `Attached Evidence: ${s.title} (${s.telemetry})`;
+          showAttachedEvidenceCard(s.title, `${s.locationLabel} • ${s.bboxLabel}`, renderAIVisionPhotoMarkup(s, true));
+
+          document.getElementById("reportDescInput").value = s.desc;
+          document.getElementById("reportWardSelect").value = s.ward;
+          document.getElementById("reportLandmarkInput").value = s.landmark;
+          updateLiveCompanion();
+          showToast(`Attached real-life road photo: ${s.title}`);
+        });
+      });
+
+      function updateLiveCompanion() {
+        const desc = document.getElementById("reportDescInput").value;
+        const ai = analyzeIssueEmpathetically(desc);
+        document.getElementById("liveEmpathyHeader").textContent = ai.tag;
+        document.getElementById("liveEmpathyText").textContent = ai.empathy;
+        document.getElementById("liveEmpathyTip").textContent = ai.tip;
+        document.getElementById("liveOfficerName").textContent = `${ai.officer.name} (${ai.officer.role.split("(")[0].trim()})`;
+        document.getElementById("liveOfficerDept").textContent = `${ai.officer.dept} • SLA: ${ai.officer.sla}`;
+        document.getElementById("liveOfficerPhoneText").textContent = ai.officer.phone;
+        document.getElementById("liveOfficerCallBtn").dataset.phone = ai.officer.phone;
+        document.getElementById("liveCatLabel").textContent = ai.category;
+        document.getElementById("livePrioBadge").innerHTML = `<span class="badge ${ai.priority === "Critical" ? "badge-critical" : ai.priority === "High" ? "badge-high" : "badge-medium"}">${ai.priority} Priority</span>`;
+      }
+
+      document.getElementById("reportDescInput").addEventListener("input", updateLiveCompanion);
+
+      document.getElementById("liveOfficerCallBtn").addEventListener("click", () => {
+        const phone = document.getElementById("liveOfficerCallBtn").dataset.phone;
+        copyTextToClipboard(phone, `Officer In-Charge number (${phone}) copied & ready to call!`);
+      });
+
+      const SCENARIOS = {
+        pothole: {
+          desc: "There is a deep waterlogged pothole near the pedestrian crossing causing bikes to skid in the dark.",
+          sampleIdx: 0
+        },
+        crater: {
+          desc: "A wide arterial road crater is blocking the bus lane and damaging vehicles.",
+          sampleIdx: 1
+        },
+        drain: {
+          desc: "Collapsed storm drain slab leaving an open pit right beside the footpath.",
+          sampleIdx: 2
+        },
+        light: {
+          desc: "Streetlights are completely off and an electric pole junction box is sparking near the corner.",
+          sampleIdx: null
+        }
+      };
+
+      document.querySelectorAll("[data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const sc = SCENARIOS[btn.dataset.preset];
+          if (!sc) return;
+          document.getElementById("reportDescInput").value = sc.desc;
+          updateLiveCompanion();
+          if (sc.sampleIdx !== null) {
+            document.querySelector(`[data-sample-idx="${sc.sampleIdx}"]`)?.click();
+          }
+        });
+      });
+
+      document.getElementById("customFileInput").addEventListener("change", (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        const objUrl = URL.createObjectURL(file);
+        document.getElementById("photoStatusLine").textContent = `Custom Site Photo Attached: ${file.name} (GPS Tagged)`;
+        showAttachedEvidenceCard(
+          file.name,
+          "Custom Resident Upload • AI Hazard Scan Active",
+          `<div class="ai-photo-stage"><img src="${objUrl}" alt="${escapeHtml(file.name)}" /><div class="ai-bbox-overlay"><span class="ai-bbox-tag">USER_EVIDENCE • 98.1%</span></div></div>`
+        );
+        showToast(`Photo uploaded: ${file.name}`);
+      });
+
+      /* ========================================================================
+         8. FORM SUBMISSION -> FULL-SCREEN EMPATHETIC OVERLAY ("YOUR FRIEND")
+         ======================================================================== */
+      document.getElementById("grievanceForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const isAnon = document.getElementById("anonShieldCheck").checked;
+        const citizenName = isAnon
+          ? "Anonymous Citizen (Shielded)"
+          : document.getElementById("reportNameInput").value.trim() || currentUser.name;
+        const ward = document.getElementById("reportWardSelect").value;
+        const landmark = document.getElementById("reportLandmarkInput").value.trim() || currentUser.residence;
+        const desc = document.getElementById("reportDescInput").value.trim();
+
+        if (!desc) {
+          showToast("Please tell CivicAI what happened in your neighborhood first.");
+          return;
+        }
+
+        const ai = analyzeIssueEmpathetically(desc);
+        const newId = `CR-2026-${Math.floor(8900 + Math.random() * 1099)}`;
+        const ticket = {
+          id: newId,
+          citizen: citizenName,
+          ward,
+          landmark,
+          category: ai.category,
+          description: desc,
+          priority: ai.priority,
+          officer: ai.officer,
+          status: "Submitted",
+          note: `Dispatched to ${ai.officer.name} (${ai.officer.phone}).`,
+          sampleIdx: selectedSampleIdx !== null ? selectedSampleIdx : 0
+        };
+
+        tickets.unshift(ticket);
+        lastSubmittedTicket = ticket;
+        satisfiedCount += 1;
+        syncSatisfiedCounters();
+
+        // Populate Full-Screen Empathetic Overlay
+        document.getElementById("overlayTicketId").textContent = newId;
+        document.getElementById("overlayEmpathyMessage").textContent =
+          `“I deeply feel sorry you’ve had to carry this, ${isAnon ? "Friend" : citizenName.split(" ")[0]}. That sounds really heavy, and no wonder you’re upset—this matters, and you don’t have to deal with it alone. I’m right here with you while ${ai.officer.name} takes action.”`;
+        document.getElementById("overlayOfficerName").textContent = `${ai.officer.name} (${ai.officer.dept})`;
+        document.getElementById("overlayOfficerPhone").textContent = ai.officer.phone;
+        document.getElementById("overlayOfficerCallBtn").dataset.phone = ai.officer.phone;
+
+        // Reset Mindset Check & Friend Chat
+        const okBtn = document.getElementById("imOkayBtn");
+        okBtn.classList.remove("verified");
+        okBtn.innerHTML = "&#10003; I&rsquo;m okay";
+        document.getElementById("mindsetStatusText").textContent =
+          "Take a deep breath. Verify how you’re feeling right now—your peace of mind comes first.";
+
+        const chatDrawer = document.getElementById("friendChatDrawer");
+        chatDrawer.classList.remove("open");
+        document.getElementById("friendChatMessages").innerHTML = `
+          <div class="chat-bubble ai">
+            I&rsquo;m here with you. I can sit with you through this while your ticket <strong>${escapeHtml(newId)}</strong> is being handled. How are you feeling about it right now? Tell me more if you want to share.
+          </div>`;
+
+        document.getElementById("postSubmitOverlay").classList.add("open");
+      });
+
+      // Overlay Officer Call Button
+      document.getElementById("overlayOfficerCallBtn").addEventListener("click", () => {
+        const phone = document.getElementById("overlayOfficerCallBtn").dataset.phone;
+        copyTextToClipboard(phone, `Direct Officer Helpline (${phone}) copied!`);
+      });
+
+      // "I'm okay" Mindset Verification Button
+      document.getElementById("imOkayBtn").addEventListener("click", () => {
+        const btn = document.getElementById("imOkayBtn");
+        btn.classList.add("verified");
+        btn.innerHTML = "&#9829; Mindset Verified: I&rsquo;m Okay";
+        document.getElementById("mindsetStatusText").textContent =
+          "Thank you for checking in! We're glad you're feeling grounded—your neighborhood is in good hands.";
+        showToast("Mindset verified! Thank you for taking a moment for yourself.");
+      });
+
+      // Option 1: "Start Chat - Your Friend"
+      document.getElementById("startFriendChatBtn").addEventListener("click", () => {
+        const drawer = document.getElementById("friendChatDrawer");
+        drawer.classList.add("open");
+        document.getElementById("friendChatInput").focus();
+      });
+
+      // Option 2: "Close"
+      document.getElementById("closeOverlayBtn").addEventListener("click", () => {
+        document.getElementById("postSubmitOverlay").classList.remove("open");
+        if (lastSubmittedTicket) {
+          switchTab("track");
+          document.getElementById("trackSearchInput").value = lastSubmittedTicket.id;
+          renderSingleTicket(lastSubmittedTicket.id);
+        }
+      });
+
+      // Empathetic Friend Chat Replies
+      function generateFriendReply(userMsg) {
+        const m = userMsg.toLowerCase();
+        if (m.includes("frustrat") || m.includes("angry") || m.includes("tired") || m.includes("long")) {
+          return "No wonder you're upset—carrying that frustration for so long is exhausting. I can see how much this matters to you, and you shouldn't have to carry it alone anymore. What feels most helpful right now?";
+        }
+        if (m.includes("worr") || m.includes("safe") || m.includes("scared") || m.includes("night")) {
+          return "That sounds really heavy, and your concern for everyone's safety shows how deeply you care for your neighbors. I'm right here with you—and remember you also have the Officer In-Charge's direct line above.";
+        }
+        if (m.includes("calm") || m.includes("breathe") || m.includes("stress")) {
+          return "I can sit with you through this. Let's take one slow breath together: breathe in for 4 seconds... hold gently... and breathe out for 6 seconds. You did a wonderful thing for your community today.";
+        }
+        return "I hear you, and I'm right here with you. Thank you for trusting me with how you feel—tell me more if you want to share, with zero pressure.";
+      }
+
+      function appendFriendChat(userText) {
+        if (!userText.trim()) return;
+        const box = document.getElementById("friendChatMessages");
+        const uDiv = document.createElement("div");
+        uDiv.className = "chat-bubble user";
+        uDiv.textContent = userText;
+        box.appendChild(uDiv);
+
+        setTimeout(() => {
+          const aDiv = document.createElement("div");
+          aDiv.className = "chat-bubble ai";
+          aDiv.textContent = generateFriendReply(userText);
+          box.appendChild(aDiv);
+          box.scrollTop = box.scrollHeight;
+        }, 320);
+
+        box.scrollTop = box.scrollHeight;
+      }
+
+      document.getElementById("sendFriendMsgBtn").addEventListener("click", () => {
+        const inp = document.getElementById("friendChatInput");
+        appendFriendChat(inp.value);
+        inp.value = "";
+      });
+
+      document.getElementById("friendChatInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          document.getElementById("sendFriendMsgBtn").click();
+        }
+      });
+
+      document.querySelectorAll("[data-friend-prompt]").forEach((chip) => {
+        chip.addEventListener("click", () => {
+          appendFriendChat(chip.dataset.friendPrompt);
+        });
+      });
+
+      document.getElementById("trackSearchBtn").addEventListener("click", () => {
+        renderSingleTicket(document.getElementById("trackSearchInput").value);
+      });
+
+      // Initialize Counters
+      syncSatisfiedCounters();
+    })();
+  </script>
+</body>
+</html>
